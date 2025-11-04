@@ -1,0 +1,30 @@
+[project]
+name = "news_analysis"
+version = "0.1.0"
+description = "[AnticSignal] News data processing & analysis package."
+authors = [
+    { name = "Lee Dae Geon", email = "histigma01@gmail.com" },
+    { name = "AnticSignal" }
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "beautifulsoup4==4.14.2",
+    "requests",
+    "python-dotenv",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# [project.scripts]
+# news_analysis= "news_analysis.main:main"
