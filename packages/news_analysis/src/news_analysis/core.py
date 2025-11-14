@@ -19,6 +19,9 @@ class NewsDataPipelineAPI:
         :param web_scrap_body: (str) 뉴스 본문 스크랩
         :param preprocess: (str) 문자열 전처리 여부. 
         """
+
+        service = NaverNewsDataResponseService()
+        service.get_naver_news_urls(query)
         # data = service.clean_news_items(filtered_items)
         pass
 
