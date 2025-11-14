@@ -23,10 +23,12 @@ pip install -e .
 
 ### 테스트
 
+`pyproject.toml`이 있는 패키지 최상위에서 pytest -s 수행시 특정 쿼리로 테스트 스크래핑까지 동작할 수 있습니다.
+
 ```bash
+cd ./packages/news_analysis
 pytest
-# 출력 확인
-pytest -s
+pytest -s	# 출력 확인
 ```
 
 ### 패키지 빌드

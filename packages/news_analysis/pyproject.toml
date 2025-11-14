@@ -1,6 +1,6 @@
 [project]
 name = "news_analysis"
-version = "0.1.0"
+version = "0.2.0"
 description = "[AnticSignal] News data processing & analysis package."
 authors = [
     { name = "Lee Dae Geon", email = "histigma01@gmail.com" },
