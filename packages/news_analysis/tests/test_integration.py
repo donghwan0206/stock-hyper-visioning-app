@@ -2,6 +2,7 @@ import pytest
 from pprint import pprint
 from src.news_analysis import NewsDataPipelineAPI
 from src.news_analysis.modules.handlers import JSONLoader
+import json
 
 def test_integration():
     # mock_api_res = './tests/news.json'
@@ -11,5 +12,11 @@ def test_integration():
     
     api = NewsDataPipelineAPI()
     # selected = api.select_top_k_by_date(filtered_items, 5, 'descending')
-    selected = api.fetch_news_from_naver_api(query="인공지능")
-    pprint(selected)
+    result = api.fetch_news_from_naver_api(query="인공지능")
+    pprint(result)
+    with open('./tests/scrapped.json', 'w', encoding='utf-8') as f:
+        f.write(json.dumps(
+            result, 
+            ensure_ascii=False, 
+            indent=4
+        ))
