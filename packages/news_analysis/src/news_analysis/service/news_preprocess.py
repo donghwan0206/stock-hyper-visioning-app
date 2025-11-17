@@ -14,6 +14,7 @@ from ..modules import (
 __all__ = (
     'NaverNewsDataResponseService',
     'NaverNewsApiResultTDict',
+    'NaverNewsContentTDict',
     'TSort'
 )
 
@@ -66,10 +67,13 @@ class NaverNewsDataResponseService:
 
     def clean_news_items(
             self, 
-            items: Iterable[NaverNewsApiResultTDict]
-    ):
+            items: Iterable[
+                Union[NaverNewsApiResultTDict, 
+                      NaverNewsContentTDict]
+            ],
+    ) -> None:
         """
-        네이버 뉴스 API 결과를 받아 정제된 뉴스 데이터 반환.
+        네이버 뉴스 API 결과를 받아 해당 Items의 데이터를 즉시 전처리한다.
 
         >>> items = [
             {
@@ -94,24 +98,22 @@ class NaverNewsDataResponseService:
             ...
         ]
         """
-        result = []
+        clean_targets = {
+            'title', 'description', 'content'
+        }
         try:
             for item in items:
-                d = {
-                    "title": self._text_tag_cleaner(item['title']),
-                    "originallink": item['originallink'],
-                    "link": item["link"],
-                    "description": self._text_tag_cleaner(item["description"]),
-                    "pubDate": item['pubDate']
-                }
-                result.append(d)
+                for k in clean_targets:
+                    if k not in item:
+                        continue
+                    item[k] = self._text_tag_cleaner(item[k])
         except KeyError as e:
             logging.error(e)
-        return result
 
     def select_top_k_by_date_from(
             self, 
-            data: list[NaverNewsApiResultTDict],
+            data: list[Union[NaverNewsApiResultTDict,
+                             NaverNewsContentTDict]],
             k: int,
             sort: TSort='descending',
             sort_item_key: str='pubDate'
@@ -171,24 +173,28 @@ class NaverNewsDataResponseService:
         )
         return top_k
     
-    def get_naver_news_scraped_results(
-            self,
-            scraped_results: Iterable[NaverNewsApiResultTDict]
-        ) -> None:
-        if scraped_results:
-            print(scraped_results)
-            for res in scraped_results:
-                print(f"\nURL: {res['url']}")
-                print(f"제목: {res['title']}")
-                print("--- 본문 (앞 100자) ---")
-                print(res['content'][:100] + "...")
-                print("-" * 20)
 
-    def get_naver_news_urls(
+    def get_naver_news_context_data_items(
             self,
-            query: str
-        ) -> None:
+            query: str,
+            debug = False
+        ):
+        def print_scrapped_results(
+                scraped_results: Iterable[NaverNewsApiResultTDict]
+            ) -> None:
+            if scraped_results:
+                print(scraped_results)
+                for res in scraped_results:
+                    try:
+                        print(f"\nURL: {res['url']}")
+                        print(f"제목: {res['title']}")
+                        print("--- 본문 (앞 100자) ---")
+                        print(res['content'][:100] + "...")
+                        print("-" * 20)
+                    except KeyError as e:
+                        print(e)
+
         scraped_results = get_naver_news_contents(query)
-        self.get_naver_news_scraped_results(scraped_results)
-
-
+        if debug:
+            print_scrapped_results(scraped_results)
+        return scraped_results

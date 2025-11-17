@@ -1,14 +1,14 @@
 import logging
 import os
 import azure.functions as func
-from antic_signal_collect import AnticSignalCollectKIS
+from kis_api import KISClient, fetch_volume_rank_top30
 import json
 
 app = func.FunctionApp()
 
-ant = AnticSignalCollectKIS(
-    APP_KEY=os.environ["KIS_APP_KEY"],
-    APP_SECRET=os.environ["KIS_APP_SECRET"]
+client = KISClient(
+    app_key=os.environ["KIS_APP_KEY"],
+    app_secret=os.environ["KIS_APP_SECRET"]
 )
 
 @app.function_name(name="kis-volumn_rank_collect_5min")
@@ -23,6 +23,6 @@ def volumn_rank_collect_5min(myTimer: func.TimerRequest, kis_volume_rank: func.O
     if myTimer.past_due:
         logging.info('The timer is past due!')
 
-    data = ant.get_volume_rank_top30()
+    data = fetch_volume_rank_top30(client)
     kis_volume_rank.set(json.dumps(data, default=str))
     logging.info('Python timer trigger function executed.')
