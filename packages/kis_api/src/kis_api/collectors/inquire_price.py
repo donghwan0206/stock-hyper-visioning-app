@@ -39,5 +39,6 @@ def fetch_inquire_price(
         "msg_cd": response.get("msg_cd"),
         "msg1": response.get("msg1"),
         "collected_at": collected_at,
+        "requested_fid_input_iscd": fid_input_iscd,
         **payload,
     }

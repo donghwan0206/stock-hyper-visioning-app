@@ -5,9 +5,11 @@ from typing import Any, List, Mapping, Optional
 
 from ..client import KISClient, KST
 
+# 종목별 투자자 매매동향(일별) 명세서 기반 collector
 __all__ = ["fetch_investor_trade_by_stock_daily"]
 
 API_PATH = "/uapi/domestic-stock/v1/quotations/investor-trade-by-stock-daily"  # api에 맞게 수정
+# API 문서: https://apiportal.koreainvestment.com/apiservice-apiservice?/uapi/domestic-stock/v1/quotations/investor-trade-by-stock-daily
 TR_ID = "FHPTJ04160001"  # api에 맞게 수정
 METHOD = "GET"
 CUSTTYPE = "P"
@@ -45,6 +47,8 @@ def fetch_investor_trade_by_stock_daily(
             "msg_cd": response.get("msg_cd"),
             "msg1": response.get("msg1"),
             "collected_at": collected_at,
+            "requested_fid_input_iscd": fid_input_iscd,
+            "requested_fid_input_date": fid_input_date,
             **item,
         }
     )
