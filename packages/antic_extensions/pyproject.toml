@@ -1,0 +1,28 @@
+[project]
+name = "antic_extensions"
+version = "0.1.0"
+description = "[AnticSignal] 공통 확장 패키지."
+authors = [
+    { name = "AnticSignal" },
+    { name = "Lee Dae Geon", email = "histigma01@gmail.com" },
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "psycopg2-binary==2.9.11",
+    "redis==7.0.1"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "python-dotenv"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
