@@ -31,9 +31,11 @@ class KISClient:
     app_secret: str
     base_url: str = "https://openapi.koreainvestment.com:9443"
     timeout: float = 10.0
+    request_interval: float = 0.0
 
     _token_expires_at: float = field(default=0.0, init=False, repr=False)
     _access_token: Optional[str] = field(default=None, init=False, repr=False)
+    _last_request_at: float = field(default=0.0, init=False, repr=False)
 
     def _issue_token(self) -> None:
         """Fetch a new access token when none exists or it is expired."""
@@ -71,9 +73,15 @@ class KISClient:
         headers: Optional[Mapping[str, str]] = None,
     ) -> Any:
         """Common request helper that injects auth headers and returns JSON."""
+        if self.request_interval > 0 and self._last_request_at:
+            elapsed = time.time() - self._last_request_at
+            remaining = self.request_interval - elapsed
+            if remaining > 0:
+                time.sleep(remaining)
         url = f"{self.base_url}{path}"
         merged_headers = {**DEFAULT_HEADERS, **self._auth_headers(), **(headers or {})}
         with httpx.Client(timeout=self.timeout) as client:
             resp = client.request(method.upper(), url, params=params, json=json, headers=merged_headers)
             resp.raise_for_status()
+        self._last_request_at = time.time()
         return resp.json()
