@@ -5,13 +5,17 @@ from typing import Any, List, Mapping, Optional
 
 from ..client import KISClient, KST
 
-__all__ = ["fetch_volume_rank_top30"]
+# 주식 거래량 순위 (Volume Rank) API 명세서 기반 수집기
+__all__ = ["fetch_volume_rank"]
 
 API_PATH = "/uapi/domestic-stock/v1/quotations/volume-rank"
-TR_ID_VOLUME_RANK = "FHPST01710000"
+# API 문서: https://apiportal.koreainvestment.com/apiservice-apiservice?/uapi/domestic-stock/v1/quotations/volume-rank
+TR_ID= "FHPST01710000"
+METHOD = "GET"
 
 
-def fetch_volume_rank_top30(
+
+def fetch_volume_rank(
     client: KISClient,
     *,
     fid_cond_mrkt_div_code: str = "J",
@@ -42,10 +46,10 @@ def fetch_volume_rank_top30(
     }
 
     response = client.request(
-        "get",
+        METHOD,
         API_PATH,
         params=params,
-        headers={"tr_id": TR_ID_VOLUME_RANK},
+        headers={"tr_id": TR_ID},
     )
 
     collected_at = datetime.now(KST).replace(second=0, microsecond=0)
