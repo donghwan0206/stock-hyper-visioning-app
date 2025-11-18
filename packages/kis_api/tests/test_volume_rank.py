@@ -3,7 +3,7 @@ from __future__ import annotations
 from kis_api.collectors.volume_rank import fetch_volume_rank
 
 
-def test_fetch_volume_rank_top30(kis_client) -> None:
+def test_fetch_volume_rank(kis_client) -> None:
     """Call the volume rank API and print the first row for quick inspection."""
     results = fetch_volume_rank(kis_client)
     assert isinstance(results, list)
