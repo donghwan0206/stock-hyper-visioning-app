@@ -35,7 +35,7 @@ def volumn_rank_collect_5min(myTimer: func.TimerRequest, kis_volume_rank: func.O
 def _extract_stock_codes(payload: str) -> List[str]:
     """volume-rank 메시지에서 종목코드를 추출한다."""
     try:
-        data = json.loads(payload)
+        data = json.loads(payload)['output']
     except json.JSONDecodeError:
         logging.warning("Skip message, invalid JSON: %s", payload)
         return []
@@ -90,7 +90,7 @@ def inquire_price_from_event(events: Sequence[func.EventHubEvent]) -> None:  # t
 
 def _persist_snapshot(payloads: List[dict]) -> None:
     """현재가 응답 목록을 JSON 파일로 저장한다."""
-    output_path = os.environ.get("CURRENT_PRICE_SNAPSHOT_PATH", "/tmp/current_price_snapshot.json")
+    output_path = os.environ.get("CURRENT_PRICE_SNAPSHOT_PATH", "./tmp/current_price_snapshot.json")
     try:
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         with open(output_path, "w", encoding="utf-8") as fp:
