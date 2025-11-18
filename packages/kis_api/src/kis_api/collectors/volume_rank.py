@@ -29,7 +29,7 @@ def fetch_volume_rank(
     fid_input_price_2: str = "",
     fid_vol_cnt: str = "",
     fid_input_date_1: str = "",
-) -> List[Mapping[str, Any]]:
+) -> Mapping[str, Any]:
     """Call the volume-rank API and return the enriched payload."""
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -53,15 +53,12 @@ def fetch_volume_rank(
     )
 
     collected_at = datetime.now(KST).replace(second=0, microsecond=0)
-    enriched: List[Mapping[str, Any]] = []
-    for item in response.get("output", []):
-        enriched.append(
-            {
-                "rt_cd": response.get("rt_cd"),
-                "msg_cd": response.get("msg_cd"),
-                "msg1": response.get("msg1"),
-                "collected_at": collected_at,
-                **item,
-            }
-        )
-    return enriched
+    
+    resp = {
+        "rt_cd": response.get("rt_cd"),
+        "msg_cd": response.get("msg_cd"),
+        "msg1": response.get("msg1"),
+        "collected_at": collected_at,
+        "output": response.get("output", [])
+    }
+    return resp
