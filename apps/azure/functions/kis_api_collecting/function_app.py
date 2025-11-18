@@ -1,10 +1,10 @@
 import logging
 import os
 import azure.functions as func
-from kis_api import KISClient, fetch_volume_rank_top30
+from kis_api import KISClient, fetch_volume_rank
 import json
 
-app = func.FunctionApp()
+app = func.FunctionApp() # type: ignore
 
 client = KISClient(
     app_key=os.environ["KIS_APP_KEY"],
@@ -19,10 +19,10 @@ client = KISClient(
 )
 @app.timer_trigger(schedule="0 */5 * * * *", arg_name="myTimer", run_on_startup=True,
               use_monitor=False) 
-def volumn_rank_collect_5min(myTimer: func.TimerRequest, kis_volume_rank: func.Out[str]) -> None:
+def volumn_rank_collect_5min(myTimer: func.TimerRequest, kis_volume_rank: func.Out[str]) -> None: # type: ignore
     if myTimer.past_due:
         logging.info('The timer is past due!')
 
-    data = fetch_volume_rank_top30(client)
+    data = fetch_volume_rank(client)
     kis_volume_rank.set(json.dumps(data, default=str))
     logging.info('Python timer trigger function executed.')
